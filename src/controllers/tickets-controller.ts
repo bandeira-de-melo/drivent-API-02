@@ -11,3 +11,15 @@ export async function getTicketTypes(req: AuthenticatedRequest, res: Response) {
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }
+
+export async function getUserTicket(req: AuthenticatedRequest, res: Response) {
+  const userId = req.userId;
+  try {
+    const userTicket = await ticketsService.getUserTicket(userId);
+    return res.status(httpStatus.OK).send(userTicket);
+  } catch (error) {
+    if (error.name === 'EnrollmentRequiredError' || error.name === 'TicketRequiredError') {
+      return res.status(httpStatus.NOT_FOUND).send(error);
+    }
+  }
+}
