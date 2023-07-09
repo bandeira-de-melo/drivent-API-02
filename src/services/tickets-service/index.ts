@@ -17,7 +17,14 @@ async function getUserTicket(userId: number) {
   return ticket;
 }
 
+async function postUserTicket(userId: number, ticketTypeId: number) {
+  const isEnrolled = await isUserEnrolled(userId);
+  if (!isEnrolled) throw EnrollmentRequiredError('Enrollment is required to reserve a ticket.');
+  return await ticketsRepository.createTicket(isEnrolled.id, ticketTypeId);
+}
+
 export const ticketsService = {
   getTicketTypes,
   getUserTicket,
+  postUserTicket,
 };

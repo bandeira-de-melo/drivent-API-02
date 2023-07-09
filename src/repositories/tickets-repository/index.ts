@@ -14,7 +14,21 @@ async function getUserTicket(enrollmentId: number): Promise<Ticket & { TicketTyp
   });
 }
 
+async function createTicket(enrollmentId: number, ticketTypeId: number) {
+  return await prisma.ticket.create({
+    data: {
+      status: 'RESERVED',
+      ticketTypeId,
+      enrollmentId,
+    },
+    include: {
+      TicketType: true,
+    },
+  });
+}
+
 export const ticketsRepository = {
   findMany,
   getUserTicket,
+  createTicket,
 };

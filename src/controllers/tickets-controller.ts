@@ -23,3 +23,18 @@ export async function getUserTicket(req: AuthenticatedRequest, res: Response) {
     }
   }
 }
+
+export async function postTicket(req: AuthenticatedRequest, res: Response) {
+  const userId = req.userId as number;
+  const ticketTypeId = req.body.ticketTypeId as number;
+  if (!ticketTypeId) return res.status(httpStatus.BAD_REQUEST).send('TicketTypeId is required');
+  try {
+    const postedTicket = await ticketsService.postUserTicket(userId, ticketTypeId);
+    return res.status(httpStatus.CREATED).send(postedTicket);
+  } catch (error) {
+    if (error.name === 'EnrollmentRequiredError') {
+      return res.status(httpStatus.NOT_FOUND).send(error);
+    }
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
+  }
+}
