@@ -1,5 +1,5 @@
 import { prisma } from '../config';
-import { notFoundError, unauthorizedError } from '../errors';
+import { notFoundError } from '../errors';
 
 export async function isUserEnrolled(userId: number) {
   try {
@@ -40,6 +40,15 @@ export async function checkForUserTicket(enrollmentId: number) {
   try {
     const hasUserTicket = await prisma.enrollment.findFirst({ where: { id: enrollmentId } });
     return hasUserTicket;
+  } catch (error) {
+    throw new Error('Internal Server Error');
+  }
+}
+
+export async function checkForUserEnrollment(userId: number) {
+  try {
+    const userEnrollment = await prisma.enrollment.findFirst({ where: { userId } });
+    return userEnrollment;
   } catch (error) {
     throw new Error('Internal Server Error');
   }

@@ -2,6 +2,10 @@ import { Payment } from '@prisma/client';
 import { prisma } from '../../config';
 import { PaymentSchema } from '../../protocols';
 
+async function getPayment(ticketId: number): Promise<Payment> {
+  return prisma.payment.findFirst({ where: { ticketId } });
+}
+
 async function postPayment(paymentData: PaymentSchema, value: number): Promise<Payment> {
   const paymentInfo = await prisma.payment.create({
     data: {
@@ -28,6 +32,7 @@ async function updateTicketStatus(ticketId: number) {
 }
 
 export const paymentRepository = {
+  getPayment,
   postPayment,
   updateTicketStatus,
 };
